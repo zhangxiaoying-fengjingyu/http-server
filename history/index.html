@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <a href="javascript:;" data-to="/">首页</a>
+    <a href="javascript:;" data-to="/home">主页</a>
+    <a href="javascript:;" data-to="/list">列表</a>
+    <div id="box"></div>
+
+    <script>
+       class Router{
+           constructor({routes}){
+                this.routes = routes
+                this.init()
+                this.initHistory()
+           }
+           initHistory() {
+               //前进后退才会触发的事件
+               console.log(window)
+               window.addEventListener('popstate', ()=> {
+                   console.log(window.location)
+               })
+           }
+           init() {
+               //获取所有的a标签
+               let as = document.querySelectorAll('a');
+               [].forEach.call(as, item =>{  //伪数组转真正的数组 [...as]
+                   item.onclick = () =>{
+                       // 获取每个a标签上的自定义属性
+                       let path = item.getAttribute('data-to')
+                       //给地址栏添加参数
+                       window.history.pushState({}, null, path)
+                       /**
+                        pushState接收3个参数，第一个参数为一个obj,表示浏览器
+                        第二个参数是document.title的值，一般设定为`null`
+                        第三个参数string，用以改变 当前url
+
+                        需要起服务才能不报错
+                       */
+                       this.update(path)
+                   }
+               })
+           }
+           // 给box 赋值
+           update(path) {
+               let box = document.getElementById('box');
+               box.innerHTML = this.routes.filter(item => item.path === path)[0].component
+           }
+       }
+
+       new Router({
+           routes:[
+               {
+                   path: '/',
+                   component: '首页'
+               },
+               {
+                   path: '/home',
+                   component: '主页'
+               },
+               {
+                   path: '/list',
+                   component: '列表'
+               }
+           ]
+       })
+    </script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <a href="#/">首页</a>
+    <a href="#/home">主页</a>
+    <a href="#/list">列表</a>
+    <div id="box"></div>
+
+    <script>
+        class Router{
+            constructor({routes}){//解构
+                this.routes = routes
+                this.init()
+                /**
+                第二种方法
+                */
+                let box = document.getElementById('box');
+                this.events = {}
+                //循环遍历routes，找到对应path的component，将component的值赋给box
+                this.routes.forEach(item => {
+                    this.events[item.path] = function(){
+                        box.innerHTML = item.component
+                    }
+                })
+            }
+            init() {
+                //点击每个a标签的时候触发的
+                window.addEventListener('load', this.updata.bind(this))
+                window.addEventListener('hashchange', this.updata.bind(this))//关键是hashchange这个方法
+            }
+            updata() {
+                // console.log(this, 'this')//是window,需要用bind,函数执行前就改变指向
+                let path = window.location.hash.slice(1);
+                this.events[path]()
+                /**
+                第一种方法
+                */
+                // let box = document.getElementById('box');
+                // this.routes.forEach(item => {
+                //     if(item.path === path){
+                //          box.innerHTML = item.component
+                //     }
+                // });
+            }
+        }
+        new Router({
+            routes: [
+                {
+                    path: '/',
+                    component: '首页'
+                },
+                {
+                    path: '/home',
+                    component: '主页'
+                },
+                {
+                    path: '/list',
+                    component: '列表'
+                }
+            ]
+        })
+    </script>
+</body>
+</html>
