@@ -24,6 +24,7 @@
                console.log(window)
                window.addEventListener('popstate', ()=> {
                    console.log(window.location)
+				   this.update(window.location.pathname)
                })
            }
            init() {
